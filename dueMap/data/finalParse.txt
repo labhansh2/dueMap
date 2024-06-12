@@ -1,0 +1,16 @@
+Convert the following list of assignments and their deadlines into a JSON format. 
+Each entry in the JSON should include the assignment name and the corresponding 
+deadline of each assignment in the list. The date string should be in ISO 8601 format. 
+The JSON structure should look like this and it should include all the assignments 
+that are mentioned in the list:
+
+```json
+[
+    {"assignment_name": "name of the assignment", "deadline": "YYYY-MM-DDTHH:MM:SS"},
+    {"assignment_name": "name of the assignment2", "deadline": "YYYY-MM-DDTHH:MM:SS"},
+    {"assignment_name": "name of the assignment3", "deadline": "YYYY-MM-DDTHH:MM:SS"},
+    ... and so on
+]
+```
+
+following is the list of assignments and deadlines:

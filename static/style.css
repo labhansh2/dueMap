@@ -1,0 +1,109 @@
+body {
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    border: 1px solid white;
+    padding: 20px;
+    border-radius: 10px;
+
+    width: 80%;
+    max-width: 600px;
+}
+
+.error {
+    color: red;
+    margin-bottom: 20px;
+}
+
+.container img {
+    width: 100%;
+    max-width: 800px;
+}
+
+.input-field {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 80%;
+    max-width: 300px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #222;
+    color: white;
+}
+
+.file-upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #222;
+    width: 80%;
+    max-width: 300px;
+    color: white;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.button #submit-course{
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.help-link {
+    color: white;
+    text-decoration: none;
+}
+
+.help-link:hover {
+    text-decoration: underline;
+}
+
+.file-upload input[type="file"] {
+    display: none;
+}
+
+.file-upload label {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logs {
+    text-align: left;
+    height: 300px;
+    overflow-y: scroll;
+    margin-top: 20px;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #222;
+}

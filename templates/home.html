@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="POST" action="/submit-notion-info" enctype="multipart/form-data">
+    <input type="text" class="input-field" name="integration_token" placeholder="Notion Integration Token">
+    <input type="text" class="input-field" name="page_name" placeholder="Notion Page Name">
+    <button type="submit" class="button">Enter</button>
+</form>
+<p><a href="https://paper-fluorine-b25.notion.site/How-to-use-Assignment-Manager-5068d4a2b50f48be858bd60bca491346?pvs=4" class="help-link">How to use?</a></p>
+{%endblock content%}

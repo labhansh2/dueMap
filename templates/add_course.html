@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="POST" action="/submit-course-details" enctype="multipart/form-data">
+    <input type="text" class="input-field" name = "course_name" placeholder="Course Name">
+    <div class="file-upload">
+        <label for="file-upload">Upload File</label>
+        <input type="file" id="file-upload" name="course_syllabus_file" onchange="updateFileName()">
+        <span id="file-name">No file chosen</span>
+    </div>
+    <button type="submit" class="button" id="submit-course">Add Course Assignments</button>
+</form>
+{%endblock content%}

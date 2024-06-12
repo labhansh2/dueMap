@@ -1,0 +1,14 @@
+"Your task is to extract all assignment, lab, project, and exam deadlines from a PDF file 
+containing the schedule for a college course. You need to list each entry with the assignment
+name and its corresponding deadline. The deadlines should be formatted in ISO 8601 date and 
+time format. Ensure that every assignment, lab, project, and exam listed in the schedule 
+is included in your response. You shouldn't miss any assignment or task that is mentioned in the pdf.
+
+Example Response:
+
+zyBook Assignment 01: 2024-06-11T10:30:00
+Lab 01: 2024-06-11T23:59:00
+zyBook Assignment 02: 2024-06-13T10:30:00
+Lab 02: 2024-06-13T23:59:00
+zyBook Assignment 03: 2024-06-18T10:30:00
+.... and so on
