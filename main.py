@@ -102,7 +102,7 @@ def add_assignments(course_name, file_path):
     logs.append("Parsing the document...")
     partial_parse = parser.get_parsed_data()
 
-    # pprint(partial_parse)
+    pprint(partial_parse)
 
     logs.append("Parsing the document content...")
     final_parse = aiParser.final_parse(partial_parse=partial_parse)
@@ -111,13 +111,28 @@ def add_assignments(course_name, file_path):
 
     final_parse_obj = json.loads(final_parse)
 
-    # pprint(final_parse_obj)
+    pprint(final_parse_obj)
+
 
     logs.append("\nAdding Assignments...")
+
     for assignment in final_parse_obj["assignments"]:
 
         logs.append(assignment["assignment_name"])
-        notion_client.add_assignment(assignment_obj=assignment, course_name=course_name)
+
+        try:
+
+            notion_client.add_assignment(assignment_obj=assignment, course_name=course_name)
+        
+        except:
+
+            logs.append("Error while adding this task!")
+            try:
+                logs.append("Trying again...")
+                notion_client.add_assignment(assignment_obj=assignment, course_name=course_name)
+            except  Exception as e:
+                logs.append(f"{e} : While adding {assignment['assignment_name']} :: {assignment['deadline']}")
+
 
     completed = True
 
@@ -129,6 +144,6 @@ def adding_assignments():
     redirect_url = url_for('add_course')
     return jsonify({'logs': logs, 'completed': completed, 'redirect_url': redirect_url})
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    app.run(port=8000)
+#     app.run(port=8000)
