@@ -144,6 +144,6 @@ def adding_assignments():
     redirect_url = url_for('add_course')
     return jsonify({'logs': logs, 'completed': completed, 'redirect_url': redirect_url})
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     app.run(port=8000)
+    app.run(debug=True)
