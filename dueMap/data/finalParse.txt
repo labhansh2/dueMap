@@ -2,7 +2,9 @@ Convert the following list of assignments and their deadlines into a JSON format
 Each entry in the JSON should include the assignment name and the corresponding 
 deadline of each assignment in the list. The date string should be in ISO 8601 format. 
 The JSON structure should look like this and it should include all the assignments 
-that are mentioned in the list:
+that are mentioned in the list: 
+
+Note: the json that you return should have every assignment mentioned in the list given.
 
 ```json
 [

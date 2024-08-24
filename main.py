@@ -18,6 +18,7 @@ notion_client = None
 logs = []
 completed = False
 
+
 @app.route("/")
 @app.route("/home")
 def home():
@@ -31,27 +32,29 @@ def handle_notion_auth():
     global notion_client
 
     notion_integration_token = request.form.get('integration_token')
-    noiton_page_name = request.form.get('page_name')
+    notion_page_name = request.form.get('page_name')
+    notion_db_name = request.form.get('db_name')
 
     try:
         notion_client = Notion.Manager(
-            notion_integration_token, noiton_page_name)
+            notion_integration_token, notion_page_name)
     except ValueError as error:
 
-        return render_template('home.html', title="DueMap", 
+        return render_template('home.html', title="DueMap",
                                subtitle="Connect with your Notion", error=error)
     except errors.APIResponseError as error:
-        return render_template('home.html', title="DueMap", 
+        return render_template('home.html', title="DueMap",
                                subtitle="Connect with your Notion", error=error)
     else:
 
         try:
-            _ = notion_client.get_database()
+            _ = notion_client.get_database(notion_db_name)
         except:
-            notion_client.create_database()
+            notion_client.create_database(notion_db_name)
             return redirect(url_for('add_course'))
         else:
             return redirect(url_for('add_course'))
+
 
 @app.route("/add-course")
 def add_course():
@@ -60,6 +63,7 @@ def add_course():
     return render_template('add_course.html',
                            title="Add Course",
                            subtitle=f"Welcome, {notion_client.get_user_name()}")
+
 
 @app.route("/submit-course-details", methods=["POST"])
 def handle_course():
@@ -76,14 +80,16 @@ def handle_course():
         file.save(file_path)
 
         # run the thread here
-        thread = threading.Thread(target=add_assignments, args=(course_name, file_path))
+        thread = threading.Thread(
+            target=add_assignments, args=(course_name, file_path))
         thread.start()
 
         return render_template('add_assgn.html')
     else:
         return render_template('add_course.html',
-                           title="Add Course",
-                           subtitle=f"Welcome, {notion_client.get_user_name()}", error="No File Uploaded")
+                               title="Add Course",
+                               subtitle=f"Welcome, {notion_client.get_user_name()}", error="No File Uploaded")
+
 
 def add_assignments(course_name, file_path):
 
@@ -106,14 +112,18 @@ def add_assignments(course_name, file_path):
 
     logs.append("Parsing the document content...")
     final_parse = aiParser.final_parse(partial_parse=partial_parse)
-    
+
     # pprint(final_parse)
 
     final_parse_obj = json.loads(final_parse)
 
     pprint(final_parse_obj)
 
-
+    try:
+        final_schema = final_parse_obj["assignments"]
+    except:
+        final_schema = final_parse_obj
+    
     logs.append("\nAdding Assignments...")
 
     for assignment in final_parse_obj["assignments"]:
@@ -122,19 +132,22 @@ def add_assignments(course_name, file_path):
 
         try:
 
-            notion_client.add_assignment(assignment_obj=assignment, course_name=course_name)
-        
+            notion_client.add_assignment(
+                assignment_obj=assignment, course_name=course_name)
+
         except:
 
             logs.append("Error while adding this task!")
             try:
                 logs.append("Trying again...")
-                notion_client.add_assignment(assignment_obj=assignment, course_name=course_name)
-            except  Exception as e:
-                logs.append(f"{e} : While adding {assignment['assignment_name']} :: {assignment['deadline']}")
-
+                notion_client.add_assignment(
+                    assignment_obj=assignment, course_name=course_name)
+            except Exception as e:
+                logs.append(
+                    f"{e} : While adding {assignment['assignment_name']} :: {assignment['deadline']}")
 
     completed = True
+
 
 @app.route("/logs")
 def adding_assignments():
@@ -143,6 +156,7 @@ def adding_assignments():
 
     redirect_url = url_for('add_course')
     return jsonify({'logs': logs, 'completed': completed, 'redirect_url': redirect_url})
+
 
 if __name__ == '__main__':
 

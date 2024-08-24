@@ -4,29 +4,34 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{title}}</title>
-        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+        <link
+            rel="icon"
+            href="https://s3-us-west-2.amazonaws.com/public.notion-static.com/bc28dbf8-b69e-4d80-b584-39cb5af5ca02/OIG.jpeg"
+            type="image/jpeg"
+        />
+        <link
+            rel="stylesheet"
+            href="{{url_for('static', filename='style.css')}}"
+        />
 
         <script>
             function updateFileName() {
-                const fileInput = document.getElementById('file-upload');
-                const fileNameDisplay = document.getElementById('file-name');
+                const fileInput = document.getElementById("file-upload");
+                const fileNameDisplay = document.getElementById("file-name");
                 if (fileInput.files.length > 0) {
                     fileNameDisplay.textContent = fileInput.files[0].name;
                 } else {
-                    fileNameDisplay.textContent = 'No file chosen';
+                    fileNameDisplay.textContent = "No file chosen";
                 }
             }
         </script>
-
     </head>
     <body>
         <div class="container">
             <h1>{{subtitle}}</h1>
             {% if error %}
-                <p class="error">{{ error }}</p>
-            {% endif %}
-            {% block content %}{% endblock %}
-
+            <p class="error">{{ error }}</p>
+            {% endif %} {% block content %}{% endblock %}
         </div>
     </body>
 </html>

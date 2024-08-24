@@ -1,44 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Logs</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-    <script>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Activity Logs</title>
+        <link
+            rel="icon"
+            href="https://s3-us-west-2.amazonaws.com/public.notion-static.com/bc28dbf8-b69e-4d80-b584-39cb5af5ca02/OIG.jpeg"
+            type="image/jpeg"
+        />
+        <link
+            rel="stylesheet"
+            href="{{url_for('static', filename='style.css')}}"
+        />
+        <script>
+            let redirect_url = null;
 
-        let redirect_url = null;
+            function fetchLogs() {
+                fetch("/logs")
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const logsDiv = document.getElementById("logs");
+                        logsDiv.innerHTML = data.logs.join("<br>");
+                        if (data.completed) {
+                            // window.location.href = data.redirect_url;
+                            redirect_url = data.redirect_url;
+                            const add_another_courseBtn =
+                                document.getElementById("add-more");
+                            add_another_courseBtn.style.display = "block";
+                        } else {
+                            setTimeout(fetchLogs, 2000); // Poll every 2 seconds
+                        }
+                    });
+            }
 
-        function fetchLogs() {
-            fetch('/logs')
-                .then(response => response.json())
-                .then(data => {
-                    const logsDiv = document.getElementById('logs');
-                    logsDiv.innerHTML = data.logs.join('<br>');
-                    if (data.completed) {
-                        // window.location.href = data.redirect_url;
-                        redirect_url = data.redirect_url;
-                        const add_another_courseBtn = document.getElementById('add-more');
-                        add_another_courseBtn.style.display = 'block';
-                    } else {
-                        setTimeout(fetchLogs, 2000); // Poll every 2 seconds
-                    }
-                });
-        }
-
-        function addMore(){
-            window.location.href = redirect_url;
-        }
-        window.onload = fetchLogs;
-
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h2>Adding your course Assignments</h2>
-        <div id="logs" class="logs">Loading logs...</div>
-        <button type="submit" class="button" id="add-more" style="display: none;" onclick="addMore()">Add More Courses</button>
-    </div>
-    
-</body>
+            function addMore() {
+                window.location.href = redirect_url;
+            }
+            window.onload = fetchLogs;
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Adding your course Assignments</h2>
+            <div id="logs" class="logs">Loading logs...</div>
+            <button
+                type="submit"
+                class="button"
+                id="add-more"
+                style="display: none"
+                onclick="addMore()"
+            >
+                Add More Courses
+            </button>
+        </div>
+    </body>
 </html>
