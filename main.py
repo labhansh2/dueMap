@@ -4,6 +4,8 @@ from notion_client import errors
 import os
 import threading
 import time
+import io
+from openai import OpenAI
 from pprint import pprint
 
 from dueMap import Notion
@@ -13,6 +15,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
+openai_client = OpenAI()
 notion_client = None
 
 logs = []
@@ -72,19 +75,32 @@ def handle_course():
     file = request.files.get('course_syllabus_file')
 
     if file and file.filename:
+        try:
+            # Use io.BytesIO to handle the file in memory
+            # file_bytes = io.BufferedReader(file.stream)
+            content = file.read()
+            
+            # Upload the file to OpenAI using the in-memory file
+            message_file = openai_client.files.create(
+    
+                file=(file.filename, content),
+                purpose='assistants'
+            )
 
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
+            file_path = message_file.id
+            
 
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(file_path)
+            # run the thread here
+            thread = threading.Thread(
+                target=add_assignments, args=(course_name, file_path))
+            thread.start()
 
-        # run the thread here
-        thread = threading.Thread(
-            target=add_assignments, args=(course_name, file_path))
-        thread.start()
-
-        return render_template('add_assgn.html')
+            return render_template('add_assgn.html')
+        except Exception as e:
+            return render_template('add_course.html',
+                                title="Add Course",
+                                subtitle=f"Welcome, {notion_client.get_user_name()}", error=str(e))
+    
     else:
         return render_template('add_course.html',
                                title="Add Course",
@@ -119,6 +135,8 @@ def add_assignments(course_name, file_path):
 
     pprint(final_parse_obj)
 
+    final_schema = None
+
     try:
         final_schema = final_parse_obj["assignments"]
     except:
@@ -126,7 +144,7 @@ def add_assignments(course_name, file_path):
     
     logs.append("\nAdding Assignments...")
 
-    for assignment in final_parse_obj["assignments"]:
+    for assignment in final_schema:
 
         logs.append(assignment["assignment_name"])
 

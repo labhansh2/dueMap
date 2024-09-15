@@ -56,11 +56,11 @@ class Parser:
     def create_message(self, file_path):
 
         
-        message_file = client.files.create(
-            file=open(file_path, "rb"), purpose="assistants"
-        )
+        # message_file = client.files.create(
+        #     file=open(file_path, "rb"), purpose="assistants"
+        # )
         
-        self.current_file_id = message_file.id
+        self.current_file_id = file_path
 
         thread = client.beta.threads.create(
             messages=[
@@ -68,7 +68,7 @@ class Parser:
                 "role": "user",
                 "content": "List all the assignments/tasks/projects/exams/labs or any tasks that has deadlines along with it's deadlines",
                 "attachments": [
-                    { "file_id": message_file.id, "tools": [{"type": "file_search"}] }
+                    { "file_id": file_path, "tools": [{"type": "file_search"}] }
                 ],
                 }
             ]
