@@ -2,7 +2,7 @@
 containing the schedule for a college course. You need to list each entry with the assignment
 name and its corresponding deadline. The deadlines should be formatted in ISO 8601 date and 
 time format. Ensure that every assignment, lab, project, and exam listed in the schedule 
-is included in your response. You shouldn't miss any assignment or task that is mentioned in the pdf.
+is included in your response. Do not miss any assignment or task that is mentioned in the pdf.
 
 Example Response:
 

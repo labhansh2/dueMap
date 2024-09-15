@@ -19,9 +19,12 @@ class Parser:
             self.parser = self.retrieve_parser()
         except:
             self.parser = self.create_parser()
-            parseInfo_path = pathlib.Path(__file__).parent/f"data/parserInfo.txt"
-            with open(parseInfo_path, "w") as file:
-                file.write(self.parser.id)
+            try:
+                parseInfo_path = pathlib.Path(__file__).parent/f"data/parserInfo.txt"
+                with open(parseInfo_path, "w") as file:
+                    file.write(self.parser.id)
+            except:
+                raise ValueError
         
 
     def retrieve_parser(self):
@@ -53,7 +56,7 @@ class Parser:
         )
 
 
-    def create_message(self, file_path):
+    def create_message(self, file_path, extra_instructions):
 
         
         message_file = client.files.create(
@@ -66,7 +69,7 @@ class Parser:
             messages=[
                 {
                 "role": "user",
-                "content": "List all the assignments/tasks/projects/exams/labs or any tasks that has deadlines along with it's deadlines",
+                "content": f"List all the assignments/tasks/projects/exams/labs or any tasks that has deadlines along with it's deadlines. {extra_instructions}",
                 "attachments": [
                     { "file_id": message_file.id, "tools": [{"type": "file_search"}] }
                 ],
@@ -100,16 +103,11 @@ def final_parse(partial_parse):
 
     fPrompt = prompt + partial_parse
 
-    # print(fPrompt)
-
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role":'user', "content":fPrompt}],
         response_format={ "type": "json_object" }
     )
-
-    # pprint(response)
-    # pprint(response.choices)
 
     return (response.choices[0].message.content).strip('\n')
 

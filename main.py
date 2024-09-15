@@ -5,6 +5,8 @@ import os
 import threading
 import time
 from pprint import pprint
+import boto3
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 from dueMap import Notion
 from dueMap import aiParser
@@ -12,6 +14,12 @@ from dueMap import aiParser
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
+
+## get these from the environment variable
+app.config['AWS_ACCESS_KEY_ID'] = os.getenv('AcessKeyID')
+app.config['AWS_SECRET_ACCESS_KEY'] = 'your-secret-access-key'
+app.config['AWS_REGION'] = 'your-region'  # e.g., 'us-west-1'
+app.config['S3_BUCKET_NAME'] = 'your-s3-bucket-name'
 
 notion_client = None
 
@@ -70,6 +78,7 @@ def handle_course():
 
     course_name = request.form.get('course_name')
     file = request.files.get('course_syllabus_file')
+    xtra_instructions = request.form.get('extra_instructions')
 
     if file and file.filename:
 
@@ -81,7 +90,7 @@ def handle_course():
 
         # run the thread here
         thread = threading.Thread(
-            target=add_assignments, args=(course_name, file_path))
+            target=add_assignments, args=(course_name, file_path, xtra_instructions))
         thread.start()
 
         return render_template('add_assgn.html')
@@ -91,7 +100,52 @@ def handle_course():
                                subtitle=f"Welcome, {notion_client.get_user_name()}", error="No File Uploaded")
 
 
-def add_assignments(course_name, file_path):
+
+# @app.route("/submit-course-details", methods=["POST"])
+# def handle_course():
+#     course_name = request.form.get('course_name')
+#     file = request.files.get('course_syllabus_file')
+
+#     if file and file.filename:
+#         s3 = boto3.client('s3',
+#                           aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
+#                           aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY'],
+#                           region_name=app.config['AWS_REGION'])
+
+#         try:
+#             # Generate a unique file name
+#             file_key = f"{course_name}/{file.filename}"
+
+#             # Upload file to S3
+#             s3.upload_fileobj(file, app.config['S3_BUCKET_NAME'], file_key)
+
+#             # S3 URL for the uploaded file
+#             file_url = f"https://{app.config['S3_BUCKET_NAME']}.s3.{app.config['AWS_REGION']}.amazonaws.com/{file_key}"
+
+#             # Run the thread with the S3 file URL
+#             thread = threading.Thread(
+#                 target=add_assignments, args=(course_name, file_url))
+#             thread.start()
+
+#             return render_template('add_assgn.html')
+#         except (NoCredentialsError, PartialCredentialsError):
+#             return render_template('add_course.html',
+#                                    title="Add Course",
+#                                    subtitle=f"Welcome, {notion_client.get_user_name()}",
+#                                    error="AWS credentials not found")
+#         except Exception as e:
+#             return render_template('add_course.html',
+#                                    title="Add Course",
+#                                    subtitle=f"Welcome, {notion_client.get_user_name()}",
+#                                    error=f"Failed to upload file: {str(e)}")
+#     else:
+#         return render_template('add_course.html',
+#                                title="Add Course",
+#                                subtitle=f"Welcome, {notion_client.get_user_name()}",
+#                                error="No File Uploaded")
+
+
+def add_assignments(course_name, file_path, extra_instructions):
 
     global logs, completed
     logs = []
@@ -100,10 +154,13 @@ def add_assignments(course_name, file_path):
     # save the file object in open ai api
 
     logs.append("Setting Up the parser...")
-    parser = aiParser.Parser()
+    try:
+        parser = aiParser.Parser()
+    except:
+        logs.append("Error creating the parser")
 
     logs.append("Sending file to the parser...")
-    parser.create_message(file_path=file_path)
+    parser.create_message(file_path=file_path, extra_instructions=extra_instructions)
 
     logs.append("Parsing the document...")
     partial_parse = parser.get_parsed_data()
