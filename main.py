@@ -122,7 +122,12 @@ def add_assignments(course_name, file_path):
     parser.create_message(file_path=file_path)
 
     logs.append("Parsing the document...")
-    partial_parse = parser.get_parsed_data()
+
+    try:
+        partial_parse = parser.get_parsed_data()
+    except errors as e:
+        logs.append(str(e))
+        completed=True
 
     pprint(partial_parse)
 

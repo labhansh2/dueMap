@@ -88,8 +88,10 @@ class Parser:
             file_id = self.current_file_id
         )
 
-
-        return (messages[0].content[0].text.value).strip()
+        try:
+            return (messages[0].content[0].text.value).strip()
+        except:
+            raise ValueError("Unable to parse the document")
 
     
 def final_parse(partial_parse):
