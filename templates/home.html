@@ -1,30 +1,89 @@
-{% extends "layout.html" %} {% block content %}
-<form method="POST" action="/submit-notion-info" enctype="multipart/form-data">
-    <input
-        type="text"
-        class="input-field"
-        name="integration_token"
-        placeholder="Notion Integration Token"
-    />
-    <input
-        type="text"
-        class="input-field"
-        name="page_name"
-        placeholder="Enter your notion page name"
-    />
-    <input
-        type="text"
-        class="input-field"
-        name="db_name"
-        placeholder="Enter your notion task database name"
-    />
-    <button type="submit" class="button">Enter</button>
-</form>
-<p>
-    <a
-        href="https://paper-fluorine-b25.notion.site/How-to-use-Assignment-Manager-5068d4a2b50f48be858bd60bca491346?pvs=4"
-        class="help-link"
-        >How to use?</a
-    >
-</p>
-{%endblock content%}
+{% extends "layout.html" %}
+
+{% block title %}DueMap - Talk to your calendars{% endblock %}
+{% block subtitle %}Talk to your calendars, automate your tasks, and organize your life effortlessly!{% endblock %}
+
+{% block content %}
+
+<!-- Navbar -->
+<nav>
+    <div class="logo">DueMap</div>
+    <button class="auth-btn" onclick="window.location.href='/login'">Login</button>
+</nav>
+
+<!-- Main Content Area -->
+<div class="container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="content">
+            <h1>Talk to your calendars</h1>
+            <h2>Automate, organize, and manage your schedules all through conversation.</h2>
+            <div class="chat-input-container">
+                <label for="file-upload" class="upload-icon">
+                    <img src="{{ url_for('static', filename='images/doc-button.png') }}" alt="Upload" />
+                </label>
+                <input type="file" id="file-upload" hidden />
+                <input
+                    type="text"
+                    class="chat-input"
+                    placeholder="Add a meditation session every morning at 5 starting today"
+                />
+                <button class="send-btn">
+                    <img src="{{ url_for('static', filename='images/send-button.png') }}" alt="Send" />
+                </button>
+            </div>
+        </div>
+        <div class="animation-container">
+            <div class="glow-container">
+                <div class="glow"></div>
+                <div class="glow"></div>
+                <div class="glow"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notion Integration Section -->
+
+    <!-- Calendar Integration Section (Google, Apple, Microsoft) -->
+    <!-- Calendar Integration Section -->
+    <!-- Calendar Integration Section -->
+    <section class="calendar-integration">
+        <h2 class="calendar-heading">Seamless Calendar Integration</h2>
+
+        <div class="calendar-cards">
+            <!-- Google Calendar Card -->
+            <div class="calendar-card">
+                <img src="{{ url_for('static', filename='images/google.png') }}" alt="Google Calendar" class="calendar-logo" />
+                <p class="calendar-name">Google Calendar</p>
+            </div>
+
+            <!-- Apple Calendar Card -->
+            <div class="calendar-card">
+                <img src="{{ url_for('static', filename='images/apple.png') }}" alt="Apple Calendar" class="calendar-logo" />
+                <p class="calendar-name">Apple Calendar</p>
+            </div>
+
+            <!-- Microsoft Calendar Card -->
+            <div class="calendar-card">
+                <img src="{{ url_for('static', filename='images/microsoft.png') }}" alt="Microsoft Calendar" class="calendar-logo" />
+                <p class="calendar-name">Microsoft Calendar</p>
+            </div>
+
+            <!-- Notion Calendar Card -->
+            <div class="calendar-card">
+                <img src="{{ url_for('static', filename='images/Notion.webp') }}" alt="Notion Calendar" class="calendar-logo" />
+                <p class="calendar-name">Notion Calendar</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DueMap. All rights reserved.</p>
+        <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-use">Terms of Use</a></p>
+    </footer>
+
+</div>
+
+{% endblock %}

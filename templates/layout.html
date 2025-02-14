@@ -1,37 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{{title}}</title>
-        <link
-            rel="icon"
-            href="https://s3-us-west-2.amazonaws.com/public.notion-static.com/bc28dbf8-b69e-4d80-b584-39cb5af5ca02/OIG.jpeg"
-            type="image/jpeg"
-        />
-        <link
-            rel="stylesheet"
-            href="{{url_for('static', filename='style.css')}}"
-        />
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        rel="icon"
+        href="https://s3-us-west-2.amazonaws.com/public.notion-static.com/bc28dbf8-b69e-4d80-b584-39cb5af5ca02/OIG.jpeg"
+        type="image/jpeg"
+    />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    />
 
-        <script>
-            function updateFileName() {
-                const fileInput = document.getElementById("file-upload");
-                const fileNameDisplay = document.getElementById("file-name");
-                if (fileInput.files.length > 0) {
-                    fileNameDisplay.textContent = fileInput.files[0].name;
-                } else {
-                    fileNameDisplay.textContent = "No file chosen";
-                }
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById("file-upload");
+            const fileNameDisplay = document.getElementById("file-name");
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+            } else {
+                fileNameDisplay.textContent = "No file chosen";
             }
-        </script>
-    </head>
-    <body>
-        <div class="container">
-            <h1>{{subtitle}}</h1>
-            {% if error %}
-            <p class="error">{{ error }}</p>
-            {% endif %} {% block content %}{% endblock %}
-        </div>
-    </body>
+        }
+
+        // JavaScript for the parallax floating effect on scroll
+        window.addEventListener('scroll', function() {
+            const heroContent = document.querySelector('.hero .content');
+            const animationContainer = document.querySelector('.hero .animation-container');
+            
+            const scrollPosition = window.scrollY;
+
+            // Parallax effect: move content and animation slower than the scroll
+            const speed = 0.4;  // Speed factor for the floating effect (smaller values will float slower)
+            
+            // Apply the parallax effect on scroll
+            heroContent.style.transform = `translateY(${scrollPosition * speed}px)`;
+            animationContainer.style.transform = `translateY(${scrollPosition * speed}px)`;
+        });
+        window.addEventListener("scroll", function () {
+            const navbar = document.querySelector("nav");
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        });
+    </script>
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
 </html>
